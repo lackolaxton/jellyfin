@@ -153,6 +153,9 @@ public class StreamingHelper(IMediaSourceManager mediaSourceManager, IUserManage
         }
 
         var outputAudioCodec = streamingRequest.AudioCodec;
+        state.OutputAudioCodec = outputAudioCodec;
+        state.OutputContainer = (containerInternal ?? string.Empty).TrimStart('.');
+        state.OutputAudioChannels = encodingHelper.GetNumAudioChannelsParam(state, state.AudioStream, state.OutputAudioCodec);
         if (EncodingHelper.LosslessAudioCodecs.Contains(outputAudioCodec))
         {
             state.OutputAudioBitrate = state.AudioStream.BitRate ?? 0;
@@ -166,10 +169,6 @@ public class StreamingHelper(IMediaSourceManager mediaSourceManager, IUserManage
         {
             containerInternal = ".pcm";
         }
-
-        state.OutputAudioCodec = outputAudioCodec;
-        state.OutputContainer = (containerInternal ?? string.Empty).TrimStart('.');
-        state.OutputAudioChannels = encodingHelper.GetNumAudioChannelsParam(state, state.AudioStream, state.OutputAudioCodec);
 
         if (state.VideoRequest is not null)
         {
